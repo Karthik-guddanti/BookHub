@@ -1,0 +1,111 @@
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import authService from '../services/auth.service';
+
+const Signup = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('user');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const userData = await authService.signup(username, password, role);
+
+      auth.login(userData);
+
+      if (userData.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      setError(err.toString());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[url('https://www.shutterstock.com/image-illustration/interior-modern-public-library-concrete-260nw-2336527651.jpg')] bg-cover bg-center">
+      <div className="max-w-md w-full p-8 border border-gray-300 rounded-lg bg-white/95 backdrop-blur-sm shadow-xl animate-slide-up">
+        <h2 className="text-2xl font-poppins font-bold text-gray-900 mb-6 text-center">Sign Up</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-sm font-poppins font-semibold text-gray-700 mb-2">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-300 outline-none bg-white hover:border-gray-400"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-poppins font-semibold text-gray-700 mb-2">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-300 outline-none bg-white hover:border-gray-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-poppins font-semibold text-gray-700 mb-2">Sign up as:</label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="role"
+                  value="user"
+                  checked={role === 'user'}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                />
+                <span className="text-sm font-roboto text-gray-700">User</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="role"
+                  value="admin"
+                  checked={role === 'admin'}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                />
+                <span className="text-sm font-roboto text-gray-700">Admin</span>
+              </label>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:shadow-lg hover:shadow-blue-500/25 text-white font-poppins font-medium py-3 px-6 rounded-lg transition-all duration-300 hover:-translate-y-1 transform disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            disabled={loading}
+          >
+            {loading ? 'Signing up...' : 'Sign Up'}
+          </button>
+          {error && <p className="text-red-600 text-sm mt-4 text-center">{error}</p>}
+        </form>
+        <Link to="/login" className="block text-center mt-6 text-blue-600 hover:text-blue-700 font-poppins">
+          Already have an account? Log In
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default Signup;
