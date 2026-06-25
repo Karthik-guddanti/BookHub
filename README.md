@@ -1,542 +1,235 @@
-# BookHub - Role-Based Library Management System
+# 📚 BookHub — Role-Based Library Management System
 
-A full-stack web application for managing and browsing books with role-based access control. Built with the MERN stack (MongoDB, Express, React, Node.js), BookHub allows admins to manage their book collections and users to discover and browse all available books.
+BookHub is a professional full-stack web application designed for managing and browsing book collections with role-based access control (RBAC). Built using the modern MERN stack (MongoDB, Express, React, Node.js), BookHub enables library administrators to curate collections while providing users a sleek interface to search, filter, and discover books.
 
 ---
 
 ## 📋 Table of Contents
 
-1. [Description](#description)
-2. [Features](#features)
-3. [Tech Stack](#tech-stack)
-4. [Project Structure](#project-structure)
-5. [Installation & Setup](#installation--setup)
-6. [Usage](#usage)
-7. [API Endpoints](#api-endpoints)
-8. [Role-Based Access Control](#role-based-access-control)
-9. [Challenges & Learnings](#challenges--learnings)
-10. [Future Improvements](#future-improvements)
-11. [License](#license)
-
----
-
-## 📖 Description
-
-**BookHub** is a library management platform designed to demonstrate role-based authentication and authorization. It solves the problem of organizing and accessing book collections by providing a centralized system where:
-
-- **Admins** can add, edit, and manage their own book collections
-- **Users** can browse and filter books from all admins
-- **Secure Access** is ensured through JWT-based authentication
-
-The project exists to provide a practical example of building secure, role-based applications with proper access control and user management.
+1. [Features](#-features)
+2. [Tech Stack](#%EF%B8%8F-tech-stack)
+3. [Project Structure](#-project-structure)
+4. [Installation & Setup](#-installation--setup)
+5. [API Endpoints](#-api-endpoints)
+6. [Role-Based Access Control](#-role-based-access-control)
+7. [Dynamic Environment Setup](#-dynamic-environment-setup)
+8. [License](#-license)
 
 ---
 
 ## ✨ Features
 
-### User Authentication
-- User signup with role selection (Admin/User)
-- Secure login with JWT token generation
-- Password encryption using bcryptjs
+### 🔐 User Authentication & Authorization
+- **Role Selection**: Distinct user roles for **Admin** and **User** upon registration.
+- **Secure Access**: JWT-based session tokens with HTTP headers authorization.
+- **Data Security**: Secure password hashing using `bcryptjs`.
+- **Protected Routes**: Custom React router guards and Express middleware to prevent unauthorized access.
 
-### Admin Features
-- ✏️ Add new books to the library
-- 📝 Edit book details (title, author, description, image)
-- 🗑️ Delete books from the collection
-- 👁️ View only their own posted books
-- 📊 Admin dashboard for quick access
+### ✍️ Admin Dashboard
+- **Create**: Add new books with titles, authors, descriptions, and cover image URLs.
+- **Update**: Edit existing book details via a premium modal interface.
+- **Delete**: Remove books from the collection.
+- **Scoped View**: Admins can only view and manage books *they* have posted.
 
-### User Features
-- 🔍 View all books posted by admins
-- 🔎 Search books by title, author, or description
-- 📚 Filter and browse book collections
-- 👤 User dashboard for navigation
-- 📋 Browse detailed book information
+### 🔍 User Dashboard
+- **Discover**: Browse the library containing all books posted across all admins.
+- **Search**: Fast, real-time search filtering by Title, Author, or Description.
+- **Details View**: View detailed cards and descriptions of any book in the library.
 
-### Security Features
-- JWT-based token authentication
-- Password hashing with bcryptjs
-- CORS protection with configurable origins
-- Helmet for HTTP header security
-- Rate limiting to prevent abuse
-- Protected routes with middleware
+### 🛡️ Security Implementations
+- **CORS Protection**: Configuration permitting only allowed client origins.
+- **Helmet**: Secures HTTP response headers.
+- **Rate Limiting**: Protects backend endpoints against brute-force and DDoS attempts.
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-| Technology | Version | Purpose |
-|---|---|---|
-| React | 19.2.0 | UI Framework |
-| Vite | 7.3.1 | Build tool & dev server |
-| React Router | 6.28.0 | Client-side routing |
-| Axios | 1.7.2 | HTTP client |
-| Tailwind CSS | 3.4.13 | Styling |
-| ESLint | 9.39.1 | Code linting |
+- **React 19** (UI library)
+- **Vite** (Build tool & development server)
+- **React Router Dom v6** (Client-side routing)
+- **Axios** (HTTP client with interceptors)
+- **Tailwind CSS** (Utility-first styling framework)
+- **ESLint** (Static code quality checks)
 
 ### Backend
-| Technology | Version | Purpose |
-|---|---|---|
-| Node.js | - | Runtime environment |
-| Express | 5.1.0 | Web framework |
-| MongoDB | - | NoSQL database |
-| Mongoose | 8.19.2 | MongoDB ODM |
-| JWT | 9.0.2 | Authentication |
-| bcryptjs | 3.0.2 | Password hashing |
-| Helmet | 8.1.0 | Security headers |
-| CORS | 2.8.5 | Cross-origin requests |
-| Express Rate Limit | 8.4.0 | Rate limiting |
-| Nodemon | 3.1.10 | Dev auto-reload |
+- **Node.js** (Runtime environment)
+- **Express 5** (Fast, minimalist web framework)
+- **MongoDB** & **Mongoose 8** (NoSQL Database & Object Data Modeling)
+- **JSON Web Tokens (JWT)** (Session security)
+- **bcryptjs** (Password cryptography)
+- **Helmet** & **Express Rate Limit** (Server hardening)
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 bookhub/
 ├── client/                          # React frontend
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── common/
-│   │   │   │   └── Navbar.jsx      # Navigation component
+│   │   │   │   └── Navbar.jsx      # Navigation bar
 │   │   │   └── ui/
-│   │   │       ├── BookCard.jsx    # Book display card
-│   │   │       ├── EditBookModal.jsx # Edit modal
-│   │   │       └── FilterSidebar.jsx # Filter & search
+│   │   │       ├── BookCard.jsx    # Card display for books
+│   │   │       ├── EditBookModal.jsx # Modal to edit books
+│   │   │       └── FilterSidebar.jsx # Sidebar search & filter
 │   │   ├── pages/
 │   │   │   ├── Home.jsx            # Landing page
-│   │   │   ├── Login.jsx           # Login form
-│   │   │   ├── Signup.jsx          # Registration form
-│   │   │   ├── AdminDashboard.jsx  # Admin interface
-│   │   │   └── UserDashboard.jsx   # User interface
+│   │   │   ├── Login.jsx           # Login interface
+│   │   │   ├── Signup.jsx          # User registration
+│   │   │   ├── AdminDashboard.jsx  # Admin-only dashboard
+│   │   │   └── UserDashboard.jsx   # User-only dashboard
 │   │   ├── routes/
-│   │   │   ├── AppRouter.jsx       # Main routing logic
-│   │   │   └── ProtectedRoute.jsx  # Route protection
+│   │   │   ├── AppRouter.jsx       # Client routes definitions
+│   │   │   └── ProtectedRoute.jsx  # Auth guard component
 │   │   ├── services/
-│   │   │   ├── api.js              # Axios instance
-│   │   │   ├── auth.service.js     # Auth API calls
-│   │   │   └── book.services.js    # Book API calls
+│   │   │   └── api.js              # Centralized Axios instance with auth headers
 │   │   ├── context/
-│   │   │   └── AuthContext.jsx     # Auth state management
+│   │   │   └── AuthContext.jsx     # Global auth state provider
 │   │   ├── hooks/
-│   │   │   └── useAuth.js          # Auth hook
-│   │   ├── App.jsx                 # Root component
-│   │   └── main.jsx                # Entry point
+│   │   │   └── useAuth.js          # Custom auth consumer hook
+│   │   ├── App.jsx                 # Root UI component
+│   │   └── main.jsx                # DOM entry point
 │   ├── vite.config.js              # Vite configuration
-│   ├── tailwind.config.js          # Tailwind configuration
-│   ├── eslint.config.js            # ESLint rules
+│   ├── tailwind.config.js          # CSS styles compilation setup
 │   └── package.json
 │
 └── server/                          # Express backend
     ├── controllers/
-    │   ├── auth.controller.js       # Authentication logic
-    │   ├── book.admin.controller.js # Admin book operations
-    │   └── book.user.controller.js  # User book operations
+    │   ├── auth.controller.js       # Authentication logic (register, login)
+    │   ├── book.admin.controller.js # Admin book write operations
+    │   └── book.user.controller.js  # User search & read operations
     ├── routes/
-    │   ├── auth.routes.js           # Auth endpoints
-    │   ├── admin.routes.js          # Admin-only endpoints
-    │   └── user.routes.js           # User endpoints
+    │   ├── auth.routes.js           # Public endpoints
+    │   ├── admin.routes.js          # Admin authorization guarded endpoints
+    │   └── user.routes.js           # Read-only authenticated endpoints
     ├── models/
-    │   ├── user.model.js            # User schema
-    │   └── book.model.js            # Book schema
+    │   ├── user.model.js            # User mongoose schema
+    │   └── book.model.js            # Book mongoose schema
     ├── middlewares/
-    │   └── auth.middleware.js       # JWT & role verification
+    │   └── auth.middleware.js       # Auth token validation and role checking
     ├── utils/
-    │   └── generateToken.js         # JWT token generation
-    ├── server.js                    # Server entry point
+    │   └── generateToken.js         # JWT generation helper
+    ├── server.js                    # Express application entry file
     └── package.json
 ```
-
-### Folder Explanations
-
-- **client/src/components**: Reusable UI components (Navbar, BookCard, modals)
-- **client/src/pages**: Full-page components for different routes
-- **client/src/services**: API communication layer with backend
-- **client/src/context**: Global state for authentication using React Context
-- **server/controllers**: Business logic for API endpoints
-- **server/routes**: API route definitions with role-based protection
-- **server/models**: Mongoose schemas for User and Book entities
 
 ---
 
 ## 🚀 Installation & Setup
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
-- MongoDB (local or Atlas connection string)
+- [Node.js](https://nodejs.org/) (v16 or higher)
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) or local MongoDB instance
 
-### Step 1: Clone & Navigate
+---
+
+### Step 1: Clone the Repository
 ```bash
-git clone <repository-url>
-cd bookhub
+git clone https://github.com/Karthik-guddanti/BookHub.git
+cd BookHub
 ```
 
-### Step 2: Backend Setup
+---
 
-#### Install Dependencies
-```bash
-cd server
-npm install
-```
+### Step 2: Backend Setup & Configuration
 
-#### Create Environment File
-Create a `.env` file in the `server` directory:
+1. Navigate to the server folder and install dependencies:
+   ```bash
+   cd server
+   npm install
+   ```
 
-```env
-# Server Configuration
-PORT=5000
-NODE_ENV=development
+2. Create a `.env` configuration file in the `server` directory:
+   ```env
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_signing_key
+   CLIENT_URL=http://localhost:5173
+   ```
 
-# MongoDB Connection
-MONGODB_URI=mongodb://localhost:27017/bookhub
-# OR for MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/bookhub
-
-# JWT Secret
-JWT_SECRET=your_jwt_secret_key_here_change_in_production
-
-# CORS Configuration
-CLIENT_URL=http://localhost:5173
-CLIENT_URLS=http://localhost:5173,http://localhost:5174
-```
-
-#### Run Backend Server
-```bash
-# Development mode (with auto-reload)
-npm run dev
-
-# Production mode
-npm start
-```
-
-Server runs on `http://localhost:5000`
+3. Run the backend server in development mode:
+   ```bash
+   npm run dev
+   ```
+   *The API server will launch at `http://localhost:5000`.*
 
 ---
 
 ### Step 3: Frontend Setup
 
-#### Install Dependencies
-```bash
-cd ../client
-npm install
-```
+1. Open a new terminal window, navigate to the client folder, and install dependencies:
+   ```bash
+   cd client
+   npm install
+   ```
 
-#### Create Environment File
-Create a `.env` file in the `client` directory:
+2. > [!NOTE]
+   > **No `.env` file configuration is required for local development.** 
+   > The Axios service automatically detects the browser's hostname:
+   > - Local hostnames (`localhost`, `127.0.0.1`) connect automatically to `http://localhost:5000/api`
+   > - Deployed platforms automatically route to `https://bookhub-3lud.onrender.com/api`
 
-```env
-# API Configuration
-VITE_API_URL=http://localhost:5000/api
-```
-
-#### Run Frontend Development Server
-```bash
-npm run dev
-```
-
-Frontend runs on `http://localhost:5173`
-
----
-
-### Step 4: Database Setup
-
-#### Option A: Local MongoDB
-```bash
-# Start MongoDB service (Windows)
-mongod
-
-# Or on Mac/Linux
-brew services start mongodb-community
-```
-
-#### Option B: MongoDB Atlas (Cloud)
-1. Create a cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Get your connection string
-3. Add it to `.env` file as `MONGODB_URI`
-
----
-
-## 📖 Usage
-
-### 1. Start the Application
-```bash
-# Terminal 1: Start Backend
-cd server
-npm run dev
-
-# Terminal 2: Start Frontend
-cd client
-npm run dev
-```
-
-### 2. Access the Application
-Open `http://localhost:5173` in your browser
-
-### 3. User Workflows
-
-#### Registration
-1. Click "Sign Up" on the homepage
-2. Enter username, password, and select role (Admin/User)
-3. Submit to create account
-
-#### Admin Workflow
-1. Login as Admin
-2. Access Admin Dashboard
-3. Add new books (title, author, description, image URL)
-4. Edit or delete your posted books
-5. View only your own book collection
-
-#### User Workflow
-1. Login as User
-2. Access User Dashboard
-3. Browse all books from all admins
-4. Use search and filter by:
-   - Title
-   - Author
-   - Description
-5. Click on books to view details
-
-#### Guest Access
-- View homepage without login
-- Cannot access protected pages (dashboards)
-- Will be redirected to login
+3. Start the local frontend development server:
+   ```bash
+   npm run dev
+   ```
+   *The React app will launch at `http://localhost:5173`.*
 
 ---
 
 ## 🔌 API Endpoints
 
 ### Base URL
-```
+```text
 http://localhost:5000/api
 ```
 
 ### Authentication Endpoints
+| HTTP Method | Route | Description | Authentication Required |
+|:---|:---|:---|:---|
+| `POST` | `/auth/signup` | Register a new user | ❌ |
+| `POST` | `/auth/login` | Log in existing user and return JWT | ❌ |
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---|
-| POST | `/auth/signup` | Register new user | ❌ |
-| POST | `/auth/login` | Login user | ❌ |
+### Book Operations (Admin)
+| HTTP Method | Route | Description | Authorization |
+|:---|:---|:---|:---|
+| `POST` | `/admin/books` | Add a new book to the library | ✅ Admin |
+| `GET` | `/admin/books` | Fetch books managed by the logged-in admin | ✅ Admin |
+| `PUT` | `/admin/books/:id` | Update an existing book's details | ✅ Admin (Owner) |
+| `DELETE` | `/admin/books/:id` | Delete a book from the system | ✅ Admin (Owner) |
 
-### Admin Book Endpoints
-
-| Method | Endpoint | Description | Auth Required | Role |
-|--------|----------|-------------|---|---|
-| POST | `/admin/books` | Add a new book | ✅ | Admin |
-| GET | `/admin/books` | Get user's books | ✅ | Admin |
-| PUT | `/admin/books/:id` | Update book | ✅ | Admin |
-| DELETE | `/admin/books/:id` | Delete book | ✅ | Admin |
-
-### User Book Endpoints
-
-| Method | Endpoint | Description | Auth Required | Query Params |
-|--------|----------|-------------|---|---|
-| GET | `/user/books` | Get all books | ❌ | `?title=...&author=...&description=...` |
-| GET | `/user/books/:id` | Get book by ID | ❌ | - |
-
-### Request/Response Examples
-
-#### Signup
-```bash
-POST /auth/signup
-Content-Type: application/json
-
-{
-  "username": "john_admin",
-  "password": "password123",
-  "role": "admin"
-}
-
-Response:
-{
-  "_id": "507f1f77bcf86cd799439011",
-  "username": "john_admin",
-  "role": "admin",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-#### Add Book (Admin)
-```bash
-POST /admin/books
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "title": "The Great Gatsby",
-  "author": "F. Scott Fitzgerald",
-  "description": "A classic American novel",
-  "imageUrl": "https://example.com/image.jpg"
-}
-
-Response:
-{
-  "_id": "507f1f77bcf86cd799439012",
-  "title": "The Great Gatsby",
-  "author": "F. Scott Fitzgerald",
-  "description": "A classic American novel",
-  "imageUrl": "https://example.com/image.jpg",
-  "addedBy": "507f1f77bcf86cd799439011",
-  "createdAt": "2024-01-15T10:30:00Z",
-  "updatedAt": "2024-01-15T10:30:00Z"
-}
-```
-
-#### Get All Books (User)
-```bash
-GET /user/books?title=Gatsby&author=Fitzgerald
-
-Response:
-[
-  {
-    "_id": "507f1f77bcf86cd799439012",
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "description": "A classic American novel",
-    "imageUrl": "https://example.com/image.jpg",
-    "addedBy": {
-      "_id": "507f1f77bcf86cd799439011",
-      "username": "john_admin",
-      "role": "admin"
-    },
-    "createdAt": "2024-01-15T10:30:00Z"
-  }
-]
-```
+### Book Operations (User/Reader)
+| HTTP Method | Route | Description | Query Parameters |
+|:---|:---|:---|:---|
+| `GET` | `/books` | Search & retrieve all books from database | `?title=...&author=...` |
+| `GET` | `/books/:id` | Retrieve single book detail by ID | None |
 
 ---
 
-## 🔐 Role-Based Access Control
+## 🛡️ Role-Based Access Control
 
-### Role Hierarchy
-
-| Role | Can Do | Cannot Do |
-|------|--------|----------|
-| **Admin** | Add books, Edit own books, Delete own books, View own books | View other admin's books, Delete user accounts |
-| **User** | View all books, Search & filter books | Add/Edit/Delete books, Post content |
-
-### Protection Mechanism
-
-1. **Route Protection**: Routes decorated with `protect` middleware require valid JWT token
-2. **Role Checking**: Routes with `isAdmin` middleware only allow admin users
-3. **Ownership Verification**: Admin can only edit/delete their own books (checked via `addedBy` field)
-
-### How It Works
-
-```
-Client Login
-    ↓
-Server Issues JWT Token
-    ↓
-Client Stores Token in localStorage
-    ↓
-Subsequent Requests Include Token (Bearer <token>)
-    ↓
-Middleware Verifies Token & Extracts User
-    ↓
-Role Check (if admin-only route)
-    ↓
-Ownership Check (if modifying resource)
-    ↓
-Execute Endpoint
-```
+Our RBAC rules ensure secure operations:
+- **Guest / Unauthenticated**: Can access the public home page, registration, and log-in views.
+- **User (Reader)**: Can browse the entire repository list, view book details, and perform text-based searches.
+- **Admin**: Can create and edit books. The backend validates the `addedBy` field of the book against the authenticated Admin's token to ensure admins cannot modify or delete books owned by other admins.
 
 ---
 
-## 🎓 Challenges & Learnings
+## 🌐 Dynamic Environment Setup
 
-### Challenge 1: Role-Based Authorization
-**Problem**: Preventing users from accessing admin endpoints while allowing admins to see only their content.
+The API client dynamically identifies where the browser is running:
+- **Development**: If `window.location.hostname` is `localhost`, the client communicates with `http://localhost:5000/api`.
+- **Production**: On external networks, it defaults to the deployed backend URL at `https://bookhub-3lud.onrender.com/api`.
 
-**Solution**: Implemented a two-layer middleware approach:
-- `protect` middleware verifies JWT and extracts user data
-- `isAdmin` middleware checks user role
-- Ownership verification checks if admin owns the resource
-
-**Learning**: Middleware composition is powerful for building secure, scalable authorization systems.
-
----
-
-### Challenge 2: CORS Configuration
-**Problem**: Frontend and backend running on different ports causes CORS errors.
-
-**Solution**: Configured dynamic CORS allowlist in server:
-```javascript
-const allowlist = [
-  'http://localhost:5173',  // Default Vite port
-  process.env.CLIENT_URL,   // Production URL
-  ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(',') : [])
-];
-```
-
-**Learning**: CORS whitelist should be environment-based to support development, staging, and production.
-
----
-
-### Challenge 3: Search & Filter Implementation
-**Problem**: Efficiently searching books by multiple fields without redundancy.
-
-**Solution**: Used MongoDB regex queries with case-insensitive options:
-```javascript
-const filter = {};
-if (req.query.title) {
-  filter.title = { $regex: req.query.title, $options: 'i' };
-}
-// Similar for author and description
-```
-
-**Learning**: MongoDB's flexible query syntax makes multi-field search simple and performant.
-
----
-
-### Challenge 4: State Management Across Components
-**Problem**: Sharing authentication state (user data, token) across React components.
-
-**Solution**: Used React Context API with a custom `useAuth` hook for centralized state.
-
-**Learning**: React Context is sufficient for medium-complexity state; for larger apps, consider Redux or Zustand.
-
----
-
-## 🚀 Future Improvements
-
-### Short-term (Priority High)
-- [ ] Add book ratings and reviews by users
-- [ ] Implement book categories/genres
-- [ ] Add pagination for large book lists
-- [ ] User profile management (change password, update profile)
-- [ ] Book cover image upload instead of URL
-- [ ] Email verification on signup
-
-### Medium-term (Priority Medium)
-- [ ] Advanced search with filters (genre, year, rating)
-- [ ] Wishlist/favorites feature for users
-- [ ] Book borrowing system with due dates
-- [ ] Admin analytics dashboard (total books, users, etc.)
-- [ ] User activity logging
-- [ ] Email notifications for new books
-
-### Long-term (Priority Low)
-- [ ] Mobile app (React Native)
-- [ ] Social features (user profiles, follow admins)
-- [ ] Book recommendations based on reading history
-- [ ] Integration with external book APIs (Google Books, OpenLibrary)
-- [ ] Admin ability to manage users
-- [ ] Support for multiple roles (Moderator, Publisher, etc.)
+> [!IMPORTANT]
+> If you need to override this default behavior (e.g. testing the local client against production data), you can create a `client/.env` file and define `VITE_API_URL=https://your-custom-url.com/api`.
 
 ---
 
 ## 📝 License
 
-This project is licensed under the ISC License - see the LICENSE file for details.
-
----
-
-## 📧 Questions?
-
-For questions or issues, please open a GitHub issue or contact the project maintainer.
-
----
-
-**Happy Reading! 📚**
+Distributed under the ISC License. See `LICENSE` for more information.
