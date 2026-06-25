@@ -13,29 +13,34 @@ dotenv.config();
 
 const app = express();
 
-const allowlist = [
+const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
+  'https://bookhub-theta.vercel.app',
   process.env.CLIENT_URL,
-  ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(',').map((url) => url.trim()) : []),
 ].filter(Boolean);
 
-const corsOptions = {
-  origin(origin, callback) {
-    if (!origin) return callback(null, true);
-
-    const isAllowed = allowlist.includes(origin);
-
-    if (isAllowed) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
 app.use(helmet());
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        /^https?:\/\/localhost:\d+$/.test(origin) ||
+        /^https:\/\/bookhub-[a-z0-9-]+\.vercel\.app$/.test(origin) ||
+        (origin.includes('bookhub') && origin.endsWith('.vercel.app'));
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
