@@ -17,6 +17,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://bookhub-theta.vercel.app',
+  'https://book-hub-coral.vercel.app',
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
@@ -29,8 +30,8 @@ app.use(
       const isAllowed =
         allowedOrigins.includes(origin) ||
         /^https?:\/\/localhost:\d+$/.test(origin) ||
-        /^https:\/\/bookhub-[a-z0-9-]+\.vercel\.app$/.test(origin) ||
-        (origin.includes('bookhub') && origin.endsWith('.vercel.app'));
+        /^https:\/\/(bookhub|book-hub)-[a-z0-9-]+\.vercel\.app$/.test(origin) ||
+        ((origin.includes('bookhub') || origin.includes('book-hub')) && origin.endsWith('.vercel.app'));
 
       if (isAllowed) {
         callback(null, true);
